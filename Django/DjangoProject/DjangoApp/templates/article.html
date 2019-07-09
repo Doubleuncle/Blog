@@ -3,7 +3,13 @@
 
 {% block title %} 
 
-{{ info }} 
+	{% if article_type == 'all' %}
+  	全部文章 | Double's Blog
+  {% elif article_type == 'tecnology' %}
+    技术 | Double's Blog
+  {% elif article_type == 'lifestyle' %}
+    生活 | Double's Blog
+  {% endif %}
 
 {% endblock %}
 

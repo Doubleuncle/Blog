@@ -19,4 +19,5 @@ path('voice/<int:id>/', detail),
 path('tag/<str:tags>/', tag),
 
 path('about/', about),
+
 ]
