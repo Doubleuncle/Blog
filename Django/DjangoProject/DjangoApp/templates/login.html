@@ -1,0 +1,51 @@
+{% extends "nav.html" %}
+ 
+{% block title %} 
+ 
+Double's Blog
+
+{% endblock %}
+
+{% block style %} 
+
+.panel-title{margin:0.5% 0%;}
+.panel-content{margin:0.5% 0%;}
+.img{width:30%;height:30%;vertical-align:middle;}
+.title-size{font-size:14px;}
+
+{% endblock %}
+
+{% block main %}
+<!--文章、图片、声音展示-->		
+<div style="margin:3% 0% 0% 0%;">
+	<div class="layui-col-md12">
+  	<div class="layui-card" style="padding:5% -20%">
+    	<div class="layui-card-body">
+      	<div class="container">
+        <div class="col-md-4 offset-md-4">
+          <form class='form-login' action="/login/" method="post">
+          	{% if message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
+          	{% csrf_token %}
+              <h2 class="text-center">管理</h2>
+              <div class="form-group">
+                {{ login_form.username.label_tag }}
+  							{{ login_form.username}}
+              </div>
+              <div class="form-group">
+                {{ login_form.password.label_tag }}
+  							{{ login_form.password}}
+              </div>
+              <button type="reset" class="btn btn-default pull-left">重置</button>
+              <button type="submit" class="btn btn-primary pull-right">提交</button>
+          </form>
+        </div>
+    </div> 
+      </div>
+    </div>
+  </div>
+</div>
+&nbsp;
+<br>
+{% endblock %}

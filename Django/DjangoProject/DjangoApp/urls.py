@@ -1,8 +1,14 @@
 from django.urls import path
-from .views import index,article,article_tecnology,article_lifestyle,image,voice,detail,tag,about
+from .views import *
 
 urlpatterns = [
 path('', index),
+
+path('login/', login),
+path('admin/', admin),
+path('logout/', logout),
+
+path('upload/', upload),
 
 path('article/', article),
 path('article/<int:id>/', detail),

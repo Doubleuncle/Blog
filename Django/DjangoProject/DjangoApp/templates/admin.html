@@ -9,7 +9,9 @@
     <link  rel="stylesheet" href={% static 'quill/quill.snow.css' %} type="text/css">
     <style>
     	.body-color{background:#e9ecef}
-    	{% block style %}{% endblock %}
+    	.img{width:3%;height:3%;vertical-align:middle;}
+			.margin-top{margin:0% 0% 2% 0%;}
+			.margin{margin:2% 0%;}
     </style>
 </head>
 
@@ -63,7 +65,93 @@
 	<!--内容-->
 	<div class="container">
 		<div style="margin:3% 0% 0% 0%;">
-			{% block main %}{% endblock %}
+			{% if request.session.is_login %}
+	<div class="layui-card">
+    	<div class="layui-card-body">
+      	<a href="#">当前在线：{{ request.session.user_name }}</a> 
+      	  {% if request.session.user_name == 'double' %}
+      			<img class="img" src={% static 'pictures/double.png' %}>
+      		{% elif request.session.user_name == 'duanduan' %}
+      			<img class="img" src={% static 'pictures/duanduan.png' %}>
+      		{% endif %}
+      	<a style="float:right" href="/logout/">登出</a>
+      </div>
+  </div>
+	
+	<div class="layui-tab layui-tab-card" style="background:white">
+  <ul class="layui-tab-title">
+    <li class="layui-this">文章编写</li>
+    <li>图片上传</li>
+    <li>声音上传</li>
+    <li>待开发</li>
+  </ul>
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+			
+			<input id="article_title" class="form-control margin-top" type="text" placeholder="请输入文章标题">
+       
+    	<div id="editor" style="background:white;">
+  			<h3>请输入文章内容</h3>
+			</div>
+			
+			<div class="margin">
+			<div class="form-check form-check-inline">
+  			<input class="form-check-input" type="radio" name="Radios" value="1" checked>
+  				<label class="form-check-label">
+    				技术类
+  				</label>
+				</div>
+			<div class="form-check form-check-inline">
+  				<input class="form-check-input" type="radio" name="Radios" value="2">
+  			<label class="form-check-label">
+    			生活类
+  			</label>
+			</div>
+			</div>
+    	
+    	
+  		<input id="article_tag" class="form-control margin" type="text" placeholder="请输入标签,目前仅支持单标签">
+       
+			<button type="button" class="layui-btn layui-btn-normal" onclick="submit_article()">
+				<i class="layui-icon">&#xe62f;</i>提交文章
+			</button>
+			
+    </div>
+    
+    <div class="layui-tab-item">
+    	<input id="image_title" class="form-control .margin-top" type="text" placeholder="请输入标题(暂未作限制，请务必输入)">
+    	
+    	<input id="image_content" class="form-control margin" type="text" placeholder="请输入内容(暂未作限制，请务必输入)">
+    	
+    	<input id="image_tag" class="form-control margin" type="text" placeholder="请输入标签,目前仅支持单标签(暂未作限制，请务必输入)">
+    				
+			<button type="button" class="layui-btn layui-btn-normal" id="submit_image">
+				<i class="layui-icon">&#xe62f;</i>提交图片
+			</button>
+			
+    </div>
+    <div class="layui-tab-item">
+    	<input id="voice_title" class="form-control .margin-top" type="text" placeholder="请输入标题(暂未作限制，请务必输入)">
+    	
+    	<input id="voice_content" class="form-control margin" type="text" placeholder="请输入内容(暂未作限制，请务必输入)">
+    	
+    	<input id="voice_tag" class="form-control margin" type="text" placeholder="请输入标签,目前仅支持单标签(暂未作限制，请务必输入)">
+    				
+			<button type="button" class="layui-btn layui-btn-normal" id="submit_voice">
+				<i class="layui-icon">&#xe62f;</i>提交声音
+			</button>
+				
+    </div>
+    <div class="layui-tab-item">
+    	...
+    </div>
+	</div>
+	</div>
+
+
+	{% else %}
+	对不起您访问的页面并不存在！
+	{% endif %}
 		</div>
 	</div>
 	
@@ -78,7 +166,12 @@
 	
 </div>
 
-<script>          
+<script>
+	//富文本编辑器
+	var quill = new Quill('#editor', {
+    theme: 'snow'
+  });
+          
 	//音频播放器
 	$(function() {
         var settings = {
