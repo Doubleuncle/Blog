@@ -112,51 +112,7 @@
   			,done: function(res, index, upload){if(res.code = 200){alert('提交成功!');location.reload();}else{alert('提交失败!请核查后台数据！')}}
   			,accept: 'audio'
 		});        
-	});
-	
-	//按钮交互集合
-	//提交文章
-	function submit_article() {
-		var article_title   = document.getElementById("article_title").value;
-		var article_content = document.getElementsByClassName("ql-editor")[0].innerHTML;
-		var article_tag     = document.getElementById("article_tag").value;
-		var upload_type     = $("[name='Radios']").filter(":checked").val(); 
-
-		if(article_title.trim() == ""){
-	  	layer.msg('标题不可为空!')
-	  }
-	  else if(article_content.trim() == ""){
-	  	layer.msg('内容不可为空!')
-	  }
-	  else if(article_tag.trim() == ""){
-	  	layer.msg('标签不可为空!')
-	  }
-	  else{
-	  	var Obj = {csrfmiddlewaretoken: '{{ csrf_token }}','article_title':article_title,'article_content':article_content,'article_tag':article_tag,'upload_type':upload_type}
-	  	ajax(Obj)
-	  }
-	}
-	
-	//通用ajax交互
-	function ajax(Obj){
-		var datas = [];
-		$.ajax({
-			type:"post",
-			async:false,
-			cache:true,
-			url:"/upload/",
-			dataType:"json",
-			data:Obj,
-			success:function(result){
-				datas = result;
-				if(datas.code == '200'){
-				  alert('提交成功!');
-				  location.reload() ; 
-				}
-			}
-		})
-	}
-	
+	});	
 </script>
 </body>
 </html>

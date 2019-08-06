@@ -43,7 +43,8 @@ def logout(request):
     return redirect("/")
 	
 def admin(request):
-    return render(request,'admin.html')
+    info = Content.objects.exclude(isDelete=True).filter(Q(type=1)|Q(type=2)).values().order_by('-id')
+    return render(request,'admin.html', locals())
 
 @csrf_protect
 def upload(request):
@@ -82,13 +83,20 @@ def upload(request):
                     for chunk in file_data.chunks():
                         f.write(chunk)
                 return JsonResponse({"code":"200"})
-            elif request.FILES.get('file'):
-                return JsonResponse({"file":"file"})
-            return JsonResponse({"b":request.POST.get('aaa')})
+            elif upload_type == '1_2':
+                if request.POST.get('submit'):
+                    id_     = request.POST.get('id')
+                    content = request.POST.get('article_content')
+                    Content.objects.filter(id = id_).update(content=content)
+                    return JsonResponse({"code":"200"})
+                else:
+                    id_     = request.POST.get('id')
+                    content = Content.objects.filter(id = id_).values()[0]['content']
+                    return JsonResponse({'content':content})
         except Exception as e:
         	  return JsonResponse({"code":str(e)})
-        
-    return JsonResponse({"a":request.method})
+    else:
+        return JsonResponse({"code":"It's no post method!"})
 
 #展现   
 def index(request):

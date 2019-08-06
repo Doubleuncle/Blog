@@ -2,7 +2,7 @@
 {% load static %}
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}{% endblock %}</title>
+    <title>管理 | Double's Blog</title>
     <link  rel="stylesheet" href={% static 'layui/css/layui.css' %} type="text/css">
     <link  rel="stylesheet" href={% static 'miniSimpleMp3Player/simpleplayer.css' %} type="text/css">
     <link  rel="stylesheet" href={% static 'bootstrap-4.1.3-dist/css/bootstrap.css' %} type="text/css">
@@ -83,7 +83,7 @@
     <li class="layui-this">文章编写</li>
     <li>图片上传</li>
     <li>声音上传</li>
-    <li>待开发</li>
+    <li>文章修改</li>
   </ul>
   <div class="layui-tab-content">
     <div class="layui-tab-item layui-show">
@@ -91,7 +91,7 @@
 			<input id="article_title" class="form-control margin-top" type="text" placeholder="请输入文章标题">
        
     	<div id="editor" style="background:white;">
-  			<h3>请输入文章内容</h3>
+  			<p>请输入文章内容</p>
 			</div>
 			
 			<div class="margin">
@@ -119,7 +119,7 @@
     </div>
     
     <div class="layui-tab-item">
-    	<input id="image_title" class="form-control .margin-top" type="text" placeholder="请输入标题(暂未作限制，请务必输入)">
+    	<input id="image_title" class="form-control margin-top" type="text" placeholder="请输入标题(暂未作限制，请务必输入)">
     	
     	<input id="image_content" class="form-control margin" type="text" placeholder="请输入内容(暂未作限制，请务必输入)">
     	
@@ -142,8 +142,22 @@
 			</button>
 				
     </div>
-    <div class="layui-tab-item">
-    	...
+    <div class="layui-tab-item">    	
+      <select class="custom-select margin-top" id='select' onchange='select_func()'>
+      	<option selected>请选择...</option>
+        {% for i in info %}
+        	<option value='{{ i.id }}'>{{ i.title }}</option>
+        {% endfor %}
+      </select>
+    	
+    	<div id="editor_" style="background:white;">
+  			<p>请输入文章内容</p>
+			</div>
+			
+			<button type="button" class="layui-btn layui-btn-normal margin" onclick="submit_article_()">
+				<i class="layui-icon">&#xe62f;</i>提交修改
+			</button>
+			
     </div>
 	</div>
 	</div>
@@ -169,6 +183,10 @@
 <script>
 	//富文本编辑器
 	var quill = new Quill('#editor', {
+    theme: 'snow'
+  });
+  
+  var quill_ = new Quill('#editor_', {
     theme: 'snow'
   });
           
@@ -207,11 +225,10 @@
 		});        
 	});
 	
-	//按钮交互集合
 	//提交文章
 	function submit_article() {
 		var article_title   = document.getElementById("article_title").value;
-		var article_content = document.getElementsByClassName("ql-editor")[0].innerHTML;
+		var article_content = document.querySelector('#editor').children[0].innerHTML
 		var article_tag     = document.getElementById("article_tag").value;
 		var upload_type     = $("[name='Radios']").filter(":checked").val(); 
 
@@ -230,7 +247,23 @@
 	  }
 	}
 	
-	//通用ajax交互
+	//修改文章 动态选择
+	function select_func(){
+    var options=$("#select option:selected").val();
+    console.log(options)
+		var Obj = {csrfmiddlewaretoken: '{{ csrf_token }}','id':options,'upload_type':'1_2'}
+		var result = ajax_(Obj)
+	};
+	
+	//提交修改
+	function submit_article_() {
+		var options=$("#select option:selected").val();
+		var article_content = document.querySelector('#editor_').children[0].innerHTML
+		var Obj = {csrfmiddlewaretoken: '{{ csrf_token }}','id':options,'article_content':article_content,'upload_type':'1_2','submit':'submit'}
+		var result = ajax(Obj)
+	}
+		
+	//提交文章 ajax交互
 	function ajax(Obj){
 		var datas = [];
 		$.ajax({
@@ -248,6 +281,24 @@
 				}
 			}
 		})
+	}
+	
+	//选择文章 ajax交互
+	function ajax_(Obj){
+		var datas = [];
+		$.ajax({
+			type:"post",
+			async:false,
+			cache:true,
+			url:"/upload/",
+			dataType:"json",
+			data:Obj,
+			success:function(result){
+				datas = result;	 
+    		document.querySelector('#editor_').children[0].innerHTML = result.content 		
+			}
+		})
+		return datas;
 	}
 	
 </script>
